@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import TickerBar from "@/components/TickerBar";
 import HeroSection from "@/components/HeroSection";
 import TradingPanel from "@/components/TradingPanel";
-import HowItWorks from "@/components/HowItWorks";
+import LiveFeed from "@/components/LiveFeed";
 import WalletSection from "@/components/WalletSection";
 import Footer from "@/components/Footer";
 
@@ -12,7 +12,7 @@ const Index = () => (
     <TickerBar />
     <HeroSection />
     <TradingPanel />
-    <HowItWorks />
+    <LiveFeed />
     <WalletSection />
     <Footer />
   </div>
