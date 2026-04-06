@@ -22,7 +22,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-6 md:flex">
-          {["trade", "how-it-works", "wallet"].map((id) => (
+          {["trade", "wallet"].map((id) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
@@ -46,7 +46,7 @@ const Navbar = () => {
 
       {mobileOpen && (
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
-          {["trade", "how-it-works", "wallet"].map((id) => (
+          {["trade", "wallet"].map((id) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
