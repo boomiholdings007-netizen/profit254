@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @layer base {
   :root {
@@ -39,7 +39,7 @@
     --input: 0 0% 14%;
     --ring: 145 80% 42%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     --chart-line: 145 80% 42%;
 
@@ -61,22 +61,23 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Nunito', sans-serif;
     letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer utilities {
   .font-display {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.04em;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.03em;
   }
 
   .font-body {
@@ -130,10 +131,35 @@
   to { transform: translateX(0); }
 }
 
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-80px) rotate(720deg); opacity: 0; }
+}
+
+@keyframes streak-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
 .animate-slide-up {
   animation: slideUp 0.6s ease-out forwards;
 }
 
 .animate-slide-in-right {
   animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.5s ease-out forwards;
+}
+
+.animate-streak-pulse {
+  animation: streak-pulse 1s ease-in-out infinite;
 }
