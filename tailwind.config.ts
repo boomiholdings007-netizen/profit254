@@ -14,6 +14,10 @@ export default {
     },
     extend: {
       colors: {
+        "profit-edge": "hsl(var(--profit-edge))",
+        "loss-edge": "hsl(var(--loss-edge))",
+        safaricom: "hsl(var(--safaricom))",
+        coin: "hsl(var(--coin))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
