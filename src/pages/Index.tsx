@@ -13,7 +13,7 @@ type Sheet = 'markets'|'feed'|'wallet'|'trades'|'referral'|'rules'|'activity'|'p
 type Position = { direction:'up'|'down'; amount:number; multiplier:number; round:number; asset:number };
 const clock = (time:number) => new Date(time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});
 const ORIGIN = Math.floor(Date.now()/60000)*60000;
-const nowTick = () => Math.floor((Date.now()-ORIGIN)/1000);
+const nowTick = () => Math.max(0, Math.floor((Date.now()-ORIGIN)/1000));
 const signed = (n:number) => `${n>=0?'+':''}${n.toFixed(2)}`;
 const chatter = ['that target is close 👀','🔥 up looks strong','📉 dumping now','🚀 lets go!','small stakes this round','down multiplier is juicy','watching the last 10s','brian k. withdrew kes 3,200'];
 const names = ['amina','kevin','faith','brian','wanjiru','otieno','mercy'];

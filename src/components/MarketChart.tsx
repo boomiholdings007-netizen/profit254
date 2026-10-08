@@ -8,6 +8,7 @@ export default function MarketChart({ asset, tick, origin }: Props) {
   const start = tick - BEFORE, x = (t: number) => (t - start) / SPAN * W;
   const pts: { t: number; p: number }[] = [];
   for (let t = Math.max(0, start); t <= tick; t++) pts.push({ t, p: tickPrice(asset, t) });
+  if (!pts.length) pts.push({ t: Math.max(0, tick), p: tickPrice(asset, Math.max(0, tick)) });
   const current = Math.floor(tick / ROUND_SECONDS), firstRound = Math.max(0, Math.floor(start / ROUND_SECONDS));
   const rounds = Array.from({ length: current - firstRound + 1 }, (_, i) => firstRound + i).map(r => ({ r, target: roundTarget(asset, r) }));
   const vals = [...pts.map(p => p.p), ...rounds.map(r => r.target)];
