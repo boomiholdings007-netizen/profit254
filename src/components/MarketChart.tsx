@@ -1,31 +1,42 @@
-import { indexPrice } from '@/lib/prediction';
+import { tickPrice, roundTarget, ROUND_SECONDS } from '@/lib/prediction';
 
-type Props = { elapsed: number; asset: number; round: number; startTime: number };
-const X = 610;
-const y = (price: number) => 20 + ((102 - price) / 2.5) * 230;
-const timeLabel = (timestamp: number) => new Date(timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
-export default function MarketChart({ elapsed, asset, round, startTime }: Props) {
-  const samples = Array.from({ length: Math.floor(elapsed * 2) + 1 }, (_, i) => ({ x: i / 2 / 60 * X, y: y(indexPrice(i / 2, asset, round)) }));
-  samples.push({ x: elapsed / 60 * X, y: y(indexPrice(elapsed, asset, round)) });
-  let path = `M ${samples[0].x} ${samples[0].y}`;
-  for (let i = 1; i < samples.length; i++) {
-    const p0 = samples[Math.max(0, i - 2)], p1 = samples[i - 1], p2 = samples[i], p3 = samples[Math.min(samples.length - 1, i + 1)];
-    path += ` C ${p1.x + (p2.x - p0.x) / 6} ${p1.y + (p2.y - p0.y) / 6}, ${p2.x - (p3.x - p1.x) / 6} ${p2.y - (p3.y - p1.y) / 6}, ${p2.x} ${p2.y}`;
-  }
-  const last = samples[samples.length - 1];
-  const above = indexPrice(elapsed, asset, round) >= 100;
+type Props = { asset: number; tick: number; origin: number };
+const W = 610, TOP = 16, BOT = 250, BEFORE = 96, AFTER = 24, SPAN = BEFORE + AFTER;
+const stamp = (ms: number) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+export default function MarketChart({ asset, tick, origin }: Props) {
+  const start = tick - BEFORE, x = (t: number) => (t - start) / SPAN * W;
+  const pts: { t: number; p: number }[] = [];
+  for (let t = Math.max(0, start); t <= tick; t++) pts.push({ t, p: tickPrice(asset, t) });
+  const current = Math.floor(tick / ROUND_SECONDS), firstRound = Math.max(0, Math.floor(start / ROUND_SECONDS));
+  const rounds = Array.from({ length: current - firstRound + 1 }, (_, i) => firstRound + i).map(r => ({ r, target: roundTarget(asset, r) }));
+  const vals = [...pts.map(p => p.p), ...rounds.map(r => r.target)];
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  const span = Math.max(hi - lo, 0.4), pad = span * 0.15; lo -= pad; hi += pad;
+  if (hi - lo < 0.4 * 1.3) { const mid = (hi + lo) / 2; lo = mid - 0.26; hi = mid + 0.26; }
+  const y = (p: number) => TOP + (hi - p) / (hi - lo) * (BOT - TOP);
+  let path = `M ${x(pts[0].t)} ${y(pts[0].p)}`;
+  for (let i = 1; i < pts.length; i++) path += ` H ${x(pts[i].t)} V ${y(pts[i].p)}`;
+  const last = pts[pts.length - 1], target = roundTarget(asset, current), above = last.p >= target;
+  const xTicks: number[] = []; for (let t = Math.ceil(start / 15) * 15; t <= start + SPAN; t += 15) if (t >= 0 || true) xTicks.push(t);
   return <div className={`market-chart ${above ? 'is-up' : 'is-down'}`}>
-    <svg viewBox="0 0 700 290" role="img" aria-label="simulated index price chart, time on the bottom and index points on the right">
-      <defs><linearGradient id="price-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity="0.14"/><stop offset="100%" stopColor="currentColor" stopOpacity="0"/></linearGradient></defs>
-      {[102,101.5,101,100.5,100,99.5].map(p => <g key={p}><line x1="0" x2={X} y1={y(p)} y2={y(p)} className="chart-grid"/><text x="695" y={y(p)+4} textAnchor="end" className="chart-label">{p.toFixed(2)}</text></g>)}
-      <line x1="0" x2={X} y1={y(100)} y2={y(100)} className="target-line"/>
-      <path d={`${path} L ${last.x} 252 L 0 252 Z`} fill="url(#price-fill)"/>
-      <path d={path} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round"/>
-      <line x1={last.x} x2={last.x} y1={last.y} y2="252" className="current-guide"/>
-      <circle cx={last.x} cy={last.y} r="10" fill="currentColor" opacity="0.15" className="price-pulse"/>
-      <circle cx={last.x} cy={last.y} r="4.5" fill="currentColor"/>
-      <rect x="604" y={y(100)-28} width="91" height="21" rx="4" className="target-tag"/><text x="650" y={y(100)-14} textAnchor="middle" className="target-text">target ▾</text>
-      {[0,15,30,45,60].map(t => <text key={t} x={t/60*X} y="282" textAnchor={t === 0 ? 'start' : t === 60 ? 'end' : 'middle'} className="chart-label">{timeLabel(startTime+t*1000)}:{String(t).padStart(2,'0')}</text>)}
+    <svg viewBox="0 0 700 290" role="img" aria-label="live index chart, time on the bottom and index points on the right">
+      <defs><linearGradient id="price-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity="0.16"/><stop offset="100%" stopColor="currentColor" stopOpacity="0"/></linearGradient><clipPath id="plot"><rect x="0" y="0" width={W} height={BOT}/></clipPath></defs>
+      {[0.1, 0.3, 0.5, 0.7, 0.9].map(f => { const v = hi - (hi - lo) * f; return <g key={f}><line x1="0" x2={W} y1={y(v)} y2={y(v)} className="chart-grid"/><text x="695" y={y(v) + 4} textAnchor="end" className="chart-label">{v.toFixed(2)}</text></g>; })}
+      <g clipPath="url(#plot)">
+        {rounds.map(({ r, target: tg }) => { const x1 = Math.max(0, x(r * ROUND_SECONDS)), x2 = r === current ? W : x((r + 1) * ROUND_SECONDS); return <g key={r}>
+          {r * ROUND_SECONDS > start && <line x1={x(r * ROUND_SECONDS)} x2={x(r * ROUND_SECONDS)} y1={TOP} y2={BOT} className="round-flag"/>}
+          <line x1={x1} x2={x2} y1={y(tg)} y2={y(tg)} className={r === current ? 'target-line' : 'target-line past-target'}/>
+        </g>; })}
+        <path d={`${path} H ${x(last.t)} V ${BOT} H ${x(pts[0].t)} Z`} fill="url(#price-fill)"/>
+        <path d={path} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round"/>
+        <line x1={x(last.t)} x2={W} y1={y(last.p)} y2={y(last.p)} className="current-guide"/>
+        <circle cx={x(last.t)} cy={y(last.p)} r="10" fill="currentColor" opacity="0.15" className="price-pulse"/>
+        <circle cx={x(last.t)} cy={y(last.p)} r="4.5" fill="currentColor"/>
+      </g>
+      <line x1="0" x2={W} y1={BOT} y2={BOT} className="chart-grid"/>
+      <rect x="612" y={y(target) - 11} width="86" height="22" rx="4" className="target-tag"/><text x="655" y={y(target) + 4} textAnchor="middle" className="target-text">target ▾ {target.toFixed(2)}</text>
+      {xTicks.map(t => <text key={t} x={x(t)} y="276" textAnchor="middle" className="chart-label">{stamp(origin + t * 1000)}</text>)}
     </svg>
   </div>;
 }
