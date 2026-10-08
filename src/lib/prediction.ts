@@ -38,7 +38,7 @@ export function tickPrice(asset: number, tick: number): number {
 export const closePrice = (asset: number, round: number) => tickPrice(asset, (round + 1) * ROUND_SECONDS);
 
 export function odds(price: number, target: number, secondsLeft: number) {
-  const probability = Math.max(0.12, Math.min(0.88, 0.5 + (price - target) * (0.45 + (1 - secondsLeft / 60) * 0.9)));
+  const probability = Math.max(0.2, Math.min(0.8, 0.5 + (price - target) * (0.45 + (1 - secondsLeft / 60) * 0.9)));
   return { up: Number((0.94 / probability).toFixed(2)), down: Number((0.94 / (1 - probability)).toFixed(2)), probability };
 }
 
