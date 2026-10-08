@@ -98,3 +98,27 @@
 }
 @media(max-width:374px) { .top-bar,.main-container { padding-left:12px;padding-right:12px; }.mobile-trade-dock { padding-left:12px;padding-right:12px; }.header-tools { gap:5px; }.market-title h1 { font-size:17px; }.price-summary strong { font-size:23px; }.price-summary small { font-size:8px; }.round-times { gap:6px; }.past-dots { gap:3px; }.market-chart { height:220px; } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important;transition:none!important; } }
+.odometer { display:inline-flex;align-items:flex-start;line-height:1.15em;font-variant-numeric:tabular-nums;transition:color .3s; }
+.od-digit { display:inline-block;height:1.15em;line-height:1.15em;overflow:hidden; }
+.od-reel { display:flex;flex-direction:column;transition:transform 200ms cubic-bezier(.2,.8,.2,1); }
+.od-reel>span { height:1.15em; }
+.od-up { color:hsl(var(--profit)); } .od-down { color:hsl(var(--loss)); }
+.chart-wrap { position:relative; }
+.round-flag { stroke:hsl(var(--border));stroke-dasharray:3 4; }
+.past-target { opacity:.35; }
+.settle-badge { position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;background:hsl(var(--card));border:1px solid currentColor;white-space:nowrap;animation:bounceIn .3s; }
+.settle-badge.is-up { color:hsl(var(--profit)); } .settle-badge.is-down { color:hsl(var(--loss)); }
+.past-chips { display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1; }
+.past-chip { height:32px;font-size:11px;padding:0 10px;border:1px solid hsl(var(--border));border-radius:999px;white-space:nowrap;flex-shrink:0; }
+.drawer-chips { display:none; }
+.ledger-row { display:grid;grid-template-columns:.7fr 1fr 1fr .8fr 1.5fr;gap:6px;padding:11px 0;border-bottom:1px solid hsl(var(--border));font-size:12px;font-variant-numeric:tabular-nums; }
+.ledger-head { color:hsl(var(--muted-foreground));font-size:10px; }
+.chat-list { max-height:50vh;overflow-y:auto; }
+@media(max-width:1023px) {
+ .main-container { padding-bottom:260px; }
+ .market-details { display:none; }
+ .drawer-chips { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px; }
+ .drawer-chips button { height:48px;font-size:10px;padding:0 6px;white-space:normal;line-height:1.2; }
+ .settle-badge { font-size:10px; }
+}
+.odometer>span { height:1.15em;line-height:1.15em; }
