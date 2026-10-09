@@ -21,7 +21,7 @@ export function roundTarget(asset: number, round: number): number {
   if (round <= 0) return (t[0] = marketAssets[asset].baseline);
   const open = tickPrice(asset, round * ROUND_SECONDS);
   const v = velocity[asset][round * ROUND_SECONDS] ?? 0;
-  const offset = (rand(asset * 7919 + round * 104729) - 0.5) * 0.9 + v * 2;
+  const offset = (rand(asset * 7919 + round * 104729) - 0.5) * 0.9 + v / marketAssets[asset].scale * 2;
   return (t[round] = r2(open + offset * marketAssets[asset].scale));
 }
 
@@ -54,5 +54,8 @@ export function resolution(asset: number, round: number): Resolution {
 export type DemoTrade = { id: number; asset: string; direction: 'up' | 'down'; amount: number; multiplier: number; payout: number; won: boolean; time: string };
 export const money = (value: number) => value.toLocaleString('en-KE', { maximumFractionDigits: 2 });
 
-export const quote = (asset: number, value: number) => `${marketAssets[asset].currency === 'usd' ? '$' : 'kes '}${value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-export const axisQuote = (asset: number, value: number) => marketAssets[asset].currency === 'usd' ? (value >= 10000 ? `$${(value / 1000).toFixed(2)}k` : `$${value.toFixed(2)}`) : `kes ${value.toFixed(2)}`;
+// Display-only reference rate, not a live foreign exchange quote.
+export const DISPLAY_USD_KES = 129.4;
+export function quoteValue(asset:number,value:number,currency?:'kes'|'usd'){const native=marketAssets[asset].currency;return !currency||currency===native?value:native==='usd'?value*DISPLAY_USD_KES:value/DISPLAY_USD_KES;}
+export const quote = (asset: number, value: number, currency?:'kes'|'usd') => `${(currency??marketAssets[asset].currency) === 'usd' ? '$' : 'kes '}${quoteValue(asset,value,currency).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+export const axisQuote = (asset: number, value: number, currency?:'kes'|'usd') => {const v=quoteValue(asset,value,currency);return (currency??marketAssets[asset].currency)==='usd' ? (v >= 10000 ? `$${(v / 1000).toFixed(2)}k` : `$${v.toFixed(2)}`) : (v>=10000?`kes ${(v/1000).toFixed(2)}k`:`kes ${v.toFixed(2)}`);};
