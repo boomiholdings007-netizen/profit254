@@ -1,4 +1,4 @@
-import { tickPrice, roundTarget, ROUND_SECONDS } from '@/lib/prediction';
+import { tickPrice, roundTarget, ROUND_SECONDS, marketAssets, quote, axisQuote } from '@/lib/prediction';
 
 type Props = { asset: number; tick: number; origin: number };
 const W = 610, TOP = 16, BOT = 250, BEFORE = 96, AFTER = 24, SPAN = BEFORE + AFTER;
@@ -13,17 +13,17 @@ export default function MarketChart({ asset, tick, origin }: Props) {
   const rounds = Array.from({ length: current - firstRound + 1 }, (_, i) => firstRound + i).map(r => ({ r, target: roundTarget(asset, r) }));
   const vals = [...pts.map(p => p.p), ...rounds.map(r => r.target)];
   let lo = Math.min(...vals), hi = Math.max(...vals);
-  const span = Math.max(hi - lo, 0.4), pad = span * 0.15; lo -= pad; hi += pad;
-  if (hi - lo < 0.4 * 1.3) { const mid = (hi + lo) / 2; lo = mid - 0.26; hi = mid + 0.26; }
+  const span = Math.max(hi - lo, marketAssets[asset].scale * 0.4), pad = span * 0.15; lo -= pad; hi += pad;
+  if (hi - lo < marketAssets[asset].scale * 0.4 * 1.3) { const mid = (hi + lo) / 2; lo = mid - marketAssets[asset].scale * 0.26; hi = mid + marketAssets[asset].scale * 0.26; }
   const y = (p: number) => TOP + (hi - p) / (hi - lo) * (BOT - TOP);
   let path = `M ${x(pts[0].t)} ${y(pts[0].p)}`;
   for (let i = 1; i < pts.length; i++) path += ` H ${x(pts[i].t)} V ${y(pts[i].p)}`;
   const last = pts[pts.length - 1], target = roundTarget(asset, current), above = last.p >= target;
-  const xTicks: number[] = []; for (let t = Math.ceil(start / 15) * 15; t <= start + SPAN; t += 15) if (t >= 0 || true) xTicks.push(t);
+  const xTicks: number[] = []; for (let t = Math.ceil(start / 15) * 15; t <= start + SPAN; t += 30) xTicks.push(t);
   return <div className={`market-chart ${above ? 'is-up' : 'is-down'}`}>
-    <svg viewBox="0 0 700 290" role="img" aria-label="live index chart, time on the bottom and index points on the right">
+    <svg viewBox="0 0 740 290" role="img" aria-label="live index chart, time on the bottom and asset currency on the right">
       <defs><linearGradient id="price-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity="0.16"/><stop offset="100%" stopColor="currentColor" stopOpacity="0"/></linearGradient><clipPath id="plot"><rect x="0" y="0" width={W} height={BOT}/></clipPath></defs>
-      {[0.1, 0.3, 0.5, 0.7, 0.9].map(f => { const v = hi - (hi - lo) * f; return <g key={f}><line x1="0" x2={W} y1={y(v)} y2={y(v)} className="chart-grid"/><text x="695" y={y(v) + 4} textAnchor="end" className="chart-label">{v.toFixed(2)}</text></g>; })}
+      {[0.1, 0.3, 0.5, 0.7, 0.9].map(f => { const v = hi - (hi - lo) * f; return <g key={f}><line x1="0" x2={W} y1={y(v)} y2={y(v)} className="chart-grid"/><text x="738" y={y(v) + 4} textAnchor="end" className="chart-label">{axisQuote(asset, v)}</text></g>; })}
       <g clipPath="url(#plot)">
         {rounds.map(({ r, target: tg }) => { const x1 = Math.max(0, x(r * ROUND_SECONDS)), x2 = r === current ? W : x((r + 1) * ROUND_SECONDS); return <g key={r}>
           {r * ROUND_SECONDS > start && <line x1={x(r * ROUND_SECONDS)} x2={x(r * ROUND_SECONDS)} y1={TOP} y2={BOT} className="round-flag"/>}
@@ -36,7 +36,7 @@ export default function MarketChart({ asset, tick, origin }: Props) {
         <circle cx={x(last.t)} cy={y(last.p)} r="4.5" fill="currentColor"/>
       </g>
       <line x1="0" x2={W} y1={BOT} y2={BOT} className="chart-grid"/>
-      <rect x="612" y={y(target) - 11} width="86" height="22" rx="4" className="target-tag"/><text x="655" y={y(target) + 4} textAnchor="middle" className="target-text">target ▾ {target.toFixed(2)}</text>
+      <rect x="478" y={y(target) - 27} width="132" height="22" rx="4" className="target-tag"/><text x="544" y={y(target) - 12} textAnchor="middle" className="target-text">target {quote(asset, target)}</text>
       {xTicks.map(t => <text key={t} x={x(t)} y="276" textAnchor="middle" className="chart-label">{stamp(origin + t * 1000)}</text>)}
     </svg>
   </div>;
