@@ -1,4 +1,4 @@
 # update roadmap
-- [ ] rebuild responsive trading screen and smooth index graph
-- [ ] update wallet, markets, feed, trades and referral sheets
-- [ ] verify mobile/desktop and demo trade settlement
+- [ ] realistic simulated quotes, currency chart, late-entry lock and live position
+- [ ] lucide migration, preview onboarding/cashier, settings and visual guide
+- [ ] verify desktop/mobile, onboarding and settlement

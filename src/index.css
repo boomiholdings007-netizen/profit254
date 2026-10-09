@@ -122,3 +122,34 @@
  .settle-badge { font-size:10px; }
 }
 .odometer>span { height:1.15em;line-height:1.15em; }
+
+/* Session preferences and position lifecycle */
+:root.light {
+ --background:0 0% 99%; --foreground:240 10% 10%; --card:0 0% 100%; --card-foreground:240 10% 10%; --popover:0 0% 100%; --popover-foreground:240 10% 10%;
+ --secondary:240 5% 95%; --secondary-foreground:240 10% 10%; --muted:240 5% 95%; --muted-foreground:240 5% 40%; --accent:240 5% 91%; --accent-foreground:240 10% 10%; --border:240 5% 85%; --input:240 5% 85%; --profit:160 84% 30%; --loss:350 80% 45%;
+}
+.settings-trigger { width:44px;height:44px;flex-shrink:0; }
+.settings-row { display:flex;align-items:center;justify-content:space-between;min-height:64px;border-bottom:1px solid hsl(var(--border));font-size:14px; }
+.settings-row svg { width:20px;height:20px; }
+.live-position { min-height:92px;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:10px 12px;border:1px solid currentColor;border-radius:6px;background:hsl(var(--secondary));animation:position-in .2s ease-out; }
+.position-winning { color:hsl(var(--profit)); }.position-losing { color:hsl(var(--loss)); }
+.position-entry { display:flex;gap:6px;align-items:center;font-size:11px; }
+.live-position>strong { display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:15px; }
+.live-position small { font-size:11px; }.position-disclaimer { font-size:10px;color:hsl(var(--muted-foreground)); }
+.price-summary strong { font-size:24px;white-space:nowrap; }
+.price-summary strong small { display:flex;align-items:center;gap:4px;margin:6px 0 0; }
+.target-mini { display:inline-block;vertical-align:middle; }
+.guide-image { width:100%;aspect-ratio:1.45;overflow:hidden;border-radius:8px;position:relative; }
+.guide-image img { width:300%;height:100%;max-width:none;object-fit:cover;position:absolute;left:0; }
+.guide-image[data-step="1"] img { left:-100%; }.guide-image[data-step="2"] img { left:-200%; }
+.guide-copy { min-height:150px;padding-top:20px; }
+.step-dot { width:8px;height:8px;border-radius:50%;background:hsl(var(--border)); }.step-active { background:hsl(var(--profit)); }
+@keyframes position-in { from { opacity:0;transform:translateY(5px); } to { opacity:1;transform:translateY(0); } }
+@media(max-width:1023px) {
+ .header-tools { gap:4px; }.top-bar { padding-inline:12px; }.mode-switch button { padding-inline:7px; }.settings-trigger { width:44px; }
+ .mobile-trade-dock .live-position { order:1;min-height:80px; }.mobile-trade-dock .active-position { display:none; }.main-container { padding-bottom:330px; }
+ .price-summary strong { font-size:21px; }.price-summary { grid-template-columns:1fr 1fr; }.price-summary>div+div { padding-left:12px; }
+ .settle-badge { white-space:normal;width:max-content;max-width:95%;text-align:center; }
+ .market-option { padding-inline:8px;gap:8px;font-size:12px; }.coin-icon { width:28px; }.ledger-row { font-size:10px;grid-template-columns:.6fr 1.25fr 1.25fr .7fr 1fr; }
+}
+@media(max-width:374px) { .price-summary strong { font-size:17px; }.balance-button { padding-inline:6px; }.brand { font-size:23px; } }
