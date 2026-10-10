@@ -51,11 +51,17 @@ export function resolution(asset: number, round: number): Resolution {
   return { round, target, close, delta: r2(close - target), up, multiplier: up ? opening.up : opening.down };
 }
 
-export type DemoTrade = { id: number; asset: string; direction: 'up' | 'down'; amount: number; multiplier: number; payout: number; won: boolean; time: string };
+export type DemoTrade = { id: number; asset: string; direction: 'up' | 'down'; amount: number; multiplier: number; payout: number; won: boolean; time: string; timestamp?: string; entry?: number; target?: number; close?: number; balance?: number; round?: number };
 export const money = (value: number) => value.toLocaleString('en-KE', { maximumFractionDigits: 2 });
 
 // Display-only reference rate, not a live foreign exchange quote.
 export const DISPLAY_USD_KES = 129.4;
-export function quoteValue(asset:number,value:number,currency?:'kes'|'usd'){const native=marketAssets[asset].currency;return !currency||currency===native?value:native==='usd'?value*DISPLAY_USD_KES:value/DISPLAY_USD_KES;}
-export const quote = (asset: number, value: number, currency?:'kes'|'usd') => `${(currency??marketAssets[asset].currency) === 'usd' ? '$' : 'kes '}${quoteValue(asset,value,currency).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-export const axisQuote = (asset: number, value: number, currency?:'kes'|'usd') => {const v=quoteValue(asset,value,currency);return (currency??marketAssets[asset].currency)==='usd' ? (v >= 10000 ? `$${(v / 1000).toFixed(2)}k` : `$${v.toFixed(2)}`) : (v>=10000?`kes ${(v/1000).toFixed(2)}k`:`kes ${v.toFixed(2)}`);};
+export type Currency = 'kes' | 'usd' | 'eur';
+export const DISPLAY_RATES: Record<Currency, number> = { kes: 1, usd: DISPLAY_USD_KES, eur: 141.2 };
+export const currencyPrefix = (currency: Currency) => currency === 'kes' ? 'kes ' : currency === 'usd' ? '$' : '€';
+export const fromKes = (value:number, currency:Currency) => value / DISPLAY_RATES[currency];
+export const toKes = (value:number, currency:Currency) => Math.round(value * DISPLAY_RATES[currency] * 100) / 100;
+export const displayMoney = (value:number, currency:Currency='kes') => currencyPrefix(currency) + fromKes(value,currency).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+export function quoteValue(asset:number,value:number,currency?:Currency){const native=marketAssets[asset].currency as Currency;return value*DISPLAY_RATES[native]/DISPLAY_RATES[currency??native];}
+export const quote = (asset: number, value: number, currency?:Currency) => currencyPrefix(currency??marketAssets[asset].currency as Currency)+quoteValue(asset,value,currency).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+export const axisQuote = (asset: number, value: number, currency?:Currency) => {const v=quoteValue(asset,value,currency);return currencyPrefix(currency??marketAssets[asset].currency as Currency)+(v>=10000?`${(v/1000).toFixed(2)}k`:v.toFixed(2));};
