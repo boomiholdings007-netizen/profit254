@@ -186,3 +186,12 @@
  .market-option { padding-inline:8px;gap:8px;font-size:12px; }.coin-icon { width:28px; }.ledger-row { font-size:10px;grid-template-columns:.6fr 1.25fr 1.25fr .7fr 1fr; }
 }
 @media(max-width:374px) { .price-summary strong { font-size:17px; }.balance-button { padding-inline:6px; }.brand { font-size:23px; } }
+
+.mobile-mode { display:none; }
+@media(max-width:1023px) {
+ .mobile-mode { display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:4px 0 12px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:10px; }
+ .mobile-mode button { height:44px;font-size:12px;gap:6px;color:hsl(var(--muted-foreground));border-radius:7px; }
+ .mobile-mode .mode-dot { width:7px;height:7px;border-radius:99px;background:currentColor; }
+ .mobile-mode .mode-on-demo { background:hsl(var(--coin)/.14);color:hsl(var(--coin)); }
+ .mobile-mode .mode-on-real { background:hsl(var(--profit)/.14);color:hsl(var(--profit)); }
+}
