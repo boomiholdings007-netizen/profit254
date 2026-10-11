@@ -1,16 +1,17 @@
-import { tickPrice, roundTarget, ROUND_SECONDS, marketAssets, quote, axisQuote } from '@/lib/prediction';
+import { tickPrice, roundTarget, ROUND_SECONDS, marketAssets, quote, axisQuote, Currency } from '@/lib/prediction';
 
-type Props = { asset: number; tick: number; origin: number; currency?:'kes'|'usd' };
+type Props = { asset: number; tick: number; origin: number; currency?:Currency; priceAt?: typeof tickPrice; targetAt?: typeof roundTarget; livePrice?: number };
 const W = 610, TOP = 16, BOT = 250, BEFORE = 96, AFTER = 24, SPAN = BEFORE + AFTER;
 const stamp = (ms: number) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 
-export default function MarketChart({ asset, tick, origin, currency }: Props) {
+export default function MarketChart({ asset, tick, origin, currency, priceAt = tickPrice, targetAt = roundTarget, livePrice }: Props) {
   const start = tick - BEFORE, x = (t: number) => (t - start) / SPAN * W;
   const pts: { t: number; p: number }[] = [];
-  for (let t = Math.max(0, start); t <= tick; t++) pts.push({ t, p: tickPrice(asset, t) });
-  if (!pts.length) pts.push({ t: Math.max(0, tick), p: tickPrice(asset, Math.max(0, tick)) });
+  for (let t = Math.max(0, start); t <= tick; t++) pts.push({ t, p: priceAt(asset, t) });
+  if (!pts.length) pts.push({ t: Math.max(0, tick), p: priceAt(asset, Math.max(0, tick)) });
+  if (livePrice !== undefined) pts[pts.length - 1].p = livePrice;
   const current = Math.floor(tick / ROUND_SECONDS), firstRound = Math.max(0, Math.floor(start / ROUND_SECONDS));
-  const rounds = Array.from({ length: current - firstRound + 1 }, (_, i) => firstRound + i).map(r => ({ r, target: roundTarget(asset, r) }));
+  const rounds = Array.from({ length: current - firstRound + 1 }, (_, i) => firstRound + i).map(r => ({ r, target: targetAt(asset, r) }));
   const vals = [...pts.map(p => p.p), ...rounds.map(r => r.target)];
   let lo = Math.min(...vals), hi = Math.max(...vals);
   const span = Math.max(hi - lo, marketAssets[asset].scale * 0.4), pad = span * 0.15; lo -= pad; hi += pad;
@@ -18,7 +19,7 @@ export default function MarketChart({ asset, tick, origin, currency }: Props) {
   const y = (p: number) => TOP + (hi - p) / (hi - lo) * (BOT - TOP);
   let path = `M ${x(pts[0].t)} ${y(pts[0].p)}`;
   for (let i = 1; i < pts.length; i++) path += ` H ${x(pts[i].t)} V ${y(pts[i].p)}`;
-  const last = pts[pts.length - 1], target = roundTarget(asset, current), above = last.p >= target;
+  const last = pts[pts.length - 1], target = targetAt(asset, current), above = last.p >= target;
   const xTicks: number[] = []; for (let t = Math.ceil(start / 15) * 15; t <= start + SPAN; t += 30) xTicks.push(t);
   return <div className={`market-chart ${above ? 'is-up' : 'is-down'}`}>
     <svg viewBox="0 0 740 290" role="img" aria-label="live index chart, time on the bottom and asset currency on the right">

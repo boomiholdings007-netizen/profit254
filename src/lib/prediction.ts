@@ -51,7 +51,7 @@ export function resolution(asset: number, round: number): Resolution {
   return { round, target, close, delta: r2(close - target), up, multiplier: up ? opening.up : opening.down };
 }
 
-export type DemoTrade = { id: number; asset: string; direction: 'up' | 'down'; amount: number; multiplier: number; payout: number; won: boolean; time: string; timestamp?: string; entry?: number; target?: number; close?: number; balance?: number; round?: number };
+export type DemoTrade = { id: number; asset: string; direction: 'up' | 'down'; amount: number; multiplier: number; payout: number; won: boolean; time: string; timestamp?: string; entry?: number; target?: number; close?: number; balance?: number; round?: number; status?: 'open' | 'closed' | 'void' };
 export const money = (value: number) => value.toLocaleString('en-KE', { maximumFractionDigits: 2 });
 
 // Display-only reference rate, not a live foreign exchange quote.
