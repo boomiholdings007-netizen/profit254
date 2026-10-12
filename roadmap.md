@@ -10,4 +10,4 @@
 - [x] expanded categorized markets and shared subsecond synthetic quotes
 - [x] practice cashier anticipation, fees and rollover overtime
 - [x] mobile four-tab dock, native index pricing and branded top notifications
-- [ ] verify market/settlement/fee/CSV tests and desktop/mobile flows
+- [x] verify market/settlement/fee/CSV tests and desktop/mobile flows
