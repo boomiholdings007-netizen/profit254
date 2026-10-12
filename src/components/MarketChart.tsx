@@ -7,7 +7,7 @@ const stamp = (ms: number) => new Date(ms).toLocaleTimeString('en-GB', { hour: '
 export default function MarketChart({ asset, tick, origin, currency, priceAt = tickPrice, targetAt = roundTarget, livePrice }: Props) {
   const start = tick - BEFORE, x = (t: number) => (t - start) / SPAN * W;
   const pts: { t: number; p: number }[] = [];
-  for (let t = Math.max(0, start); t <= tick; t++) pts.push({ t, p: priceAt(asset, t) });
+  for (let t = Math.max(0, start); t <= tick; t+=1/marketAssets[asset].ticks) pts.push({ t, p: priceAt(asset, t) });
   if (!pts.length) pts.push({ t: Math.max(0, tick), p: priceAt(asset, Math.max(0, tick)) });
   if (livePrice !== undefined) pts[pts.length - 1].p = livePrice;
   const current = Math.floor(tick / ROUND_SECONDS), firstRound = Math.max(0, Math.floor(start / ROUND_SECONDS));

@@ -75,7 +75,7 @@
 .stake-heading { display:flex;justify-content:space-between;font-size:11px;margin-bottom:11px; }
 .stake-options { display:grid;grid-template-columns:repeat(4,1fr);gap:7px; }.stake-options button { height:44px;font-size:10px;padding:0 4px; }.stake-options button:last-child { grid-column:1/-1; }
 .selected-chip { background:hsl(var(--profit)/.09)!important;border-color:hsl(var(--profit)/.5)!important;color:hsl(var(--profit))!important; }
-.outcome-buttons { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px; }.outcome-button { height:76px;white-space:normal;padding:8px;gap:7px; }.outcome-button strong { display:block;font-size:15px; }.outcome-button strong span { font-size:12px;font-weight:500; }.outcome-button small { display:block;font-size:10px;font-weight:500;margin-top:5px; }.outcome-button>svg { width:20px;height:20px; }
+.outcome-buttons { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px; }.outcome-button { height:76px;white-space:normal;padding:8px;gap:7px; }.outcome-button strong { display:block;font-size:15px; }.outcome-button strong>span { font-size:12px;font-weight:500; }.outcome-button small { display:block;font-size:10px;font-weight:500;margin-top:5px; }.outcome-button>svg { width:20px;height:20px; }
 .slip-note { font-size:10px;color:hsl(var(--muted-foreground));text-align:center;margin:16px 0 3px;line-height:1.6; }
 .desktop-slip-footer { display:flex;align-items:center;justify-content:center;gap:7px;border-top:1px solid hsl(var(--border));padding-top:18px;margin-top:24px;font-size:10px;color:hsl(var(--muted-foreground)); }
 .referral-nudge { display:flex;align-items:center;gap:12px;padding-top:24px;margin-top:24px;border-top:1px solid hsl(var(--border)); }.gift-icon { color:hsl(var(--coin)); }.referral-nudge strong { display:block;font-size:11px; }.referral-nudge span { display:block;color:hsl(var(--muted-foreground));font-size:10px;margin-top:5px; }.referral-nudge button { margin-left:auto; }
@@ -100,7 +100,7 @@
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important;transition:none!important; } }
 .odometer { display:inline-flex;align-items:flex-start;line-height:1.15em;font-variant-numeric:tabular-nums;transition:color .3s; }
 .od-digit { display:inline-block;height:1.15em;line-height:1.15em;overflow:hidden; }
-.od-reel { display:flex;flex-direction:column;transition:transform 200ms cubic-bezier(.2,.8,.2,1); }
+.od-reel { display:flex;flex-direction:column;transition:transform 65ms cubic-bezier(.2,.8,.2,1); }
 .od-reel>span { height:1.15em; }
 .od-up { color:hsl(var(--profit)); } .od-down { color:hsl(var(--loss)); }
 .chart-wrap { position:relative; }
@@ -194,4 +194,45 @@
  .mobile-mode .mode-dot { width:7px;height:7px;border-radius:99px;background:currentColor; }
  .mobile-mode .mode-on-demo { background:hsl(var(--coin)/.14);color:hsl(var(--coin)); }
  .mobile-mode .mode-on-real { background:hsl(var(--profit)/.14);color:hsl(var(--profit)); }
+}
+
+/* phase two: restrained, semantic feedback */
+.p254-toast[data-sonner-toast] { background:hsl(var(--background)/.95); color:hsl(var(--foreground)); border:1px solid hsl(var(--border)); border-radius:28px; padding:12px 18px; font-size:12px; font-weight:500; backdrop-filter:blur(16px); box-shadow:0 8px 28px hsl(var(--background)/.4); font-family:Inter,sans-serif; }
+.p254-toast.notice-win,.p254-toast[data-type="success"] { color:hsl(var(--profit)); border-color:hsl(var(--profit)/.4); background:hsl(var(--background)/.96); }
+.p254-toast.notice-loss,.p254-toast[data-type="error"] { color:hsl(var(--loss)); border-color:hsl(var(--loss)/.5); }
+.p254-toast.notice-lock { color:hsl(var(--coin)); border-color:hsl(var(--coin)/.4); }
+.market-categories { display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:4px;margin:16px 0; }
+.market-categories button { min-height:44px;padding-inline:8px;font-size:12px; }
+.market-option { min-height:82px;height:auto;white-space:normal; }
+.market-option>span:last-of-type { font-size:12px;flex-shrink:0; }
+.market-option .coin-icon svg { width:32px;height:32px; }
+.cashier-service-lock { display:flex;gap:8px;align-items:center;font-size:12px;color:hsl(var(--coin));padding-block:8px;border-bottom:1px solid hsl(var(--border)); }
+.cashier-anticipation { display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;padding:28px 0; }
+.cashier-anticipation h3 { font-size:16px;font-weight:600;overflow-wrap:anywhere; }
+.cashier-milestones { display:flex;width:100%;gap:8px; }
+.cashier-milestones li { flex:1;min-width:0;border-top:3px solid hsl(var(--border));padding-top:12px;color:hsl(var(--muted-foreground)); }
+.cashier-milestones li>span { display:flex;justify-content:center;height:24px; }
+.cashier-milestones small { display:block;font-size:10px;overflow-wrap:anywhere; }
+.cashier-milestones .milestone-filled { border-color:hsl(var(--profit));color:hsl(var(--profit)); }
+.cashier-phone { animation:phone-wait 1.4s ease-in-out infinite; }
+.overtime-boost { color:hsl(var(--coin));filter:drop-shadow(0 0 5px hsl(var(--coin)/.3)); }
+@keyframes phone-wait { 50% { transform:rotate(8deg); } }
+@media(max-width:1023px) {
+ .bottom-nav { grid-template-columns:repeat(4,minmax(0,1fr)); }
+ .header-tools .balance-button { display:none; }
+ .auth-trigger { max-width:150px;overflow:hidden;text-overflow:ellipsis;min-height:44px; }
+ .top-bar { flex-wrap:nowrap;min-height:64px; }
+ .brand { display:flex;align-items:center;gap:0; }
+ .brand-dot { margin-left:6px; }
+ .mobile-mode { border-radius:8px; }
+ .mobile-mode .mode-on-demo { border:1px solid hsl(var(--coin)/.35); }
+ .mobile-mode .mode-on-real { border:1px solid hsl(var(--profit)/.35); }
+ .mobile-mode .mode-on-real .mode-dot { animation:pulse 2s ease-in-out infinite; }
+ .main-container { padding-bottom:calc(340px + env(safe-area-inset-bottom)); }
+ .mobile-trade-dock { bottom:calc(65px + env(safe-area-inset-bottom)); }
+ .market-title h1 { font-size:18px;line-height:1.4; }
+ .market-option { min-height:88px; }
+ .market-option .coin-icon { width:36px;flex-shrink:0; }
+ .market-option>svg:last-child { display:none; }
+ .market-option small { font-size:10px; }
 }
