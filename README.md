@@ -1,3 +1,26 @@
-# Welcome to your Lovable project
+# Up Down Trade
 
-TODO: Document your project here
+Build Profit254 a one page trading platform for people with zero to no knowledge of trading the branding colours are black red and green make trading as simple as predicting up and down. Withdrawal and deposits via mpesa.
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://profit254.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/74971b56-4169-4f8e-bd5e-c10c6acbbbe6).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
+```
